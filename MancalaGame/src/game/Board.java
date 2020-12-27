@@ -3,7 +3,7 @@ package game;
 public class Board {
 	
 	int[] board;
-	int playerPosition = 0;
+	int playerPosition;
 
 	public Board() {
 	  board = new int[14];
@@ -11,9 +11,10 @@ public class Board {
 	}
 	
 	  
-	// Move Player marbles around board - returns the index of where the last marble dropped
+	// Move marbles around board - returns the index of where the last marble dropped
 	public int playerMoveMarbles(int index) {
-		playerPosition = index;
+		// Player position starts at index
+	    playerPosition = index;
 	    int numMarbles = board[index];
 
 	    // If they try to move marbles from an empty slot - forfeit a turn
@@ -24,11 +25,8 @@ public class Board {
 	    
 	    // If there are marbles in the slot -- start at 0, increment for the number of marbles at index
 	    for(int i = 0; i <= numMarbles; i++) {
-	      
-	      // CHECKS
-
 	      // Check to see if on first increment, set slot to 0
-	      if(i == 0) {
+	       if(i == 0) {
 	        board[playerPosition] = 0;
 	        playerPosition++;
 	        continue;
@@ -40,27 +38,47 @@ public class Board {
 	      }
 
 	      // if player position is in opponent manacala, do not distribute a marble
+	      // increment player position to index 1 and distribute there instead
 	      if(playerPosition == 0) {
 	        playerPosition++;
-	        continue;
 	      } 
-	      
-	      // Add one marble to each passed slot
+
 	      board[playerPosition] = board[playerPosition] + 1;
-	      
-	      // Increment player position on board
 	      playerPosition++;
-
-
-	      // DETERMINE RULES 
-
-
-
-	      
 	    }
+	    // DETERMINE RULES - seperate methods
 
 	    return playerPosition - 1;
 	  }
+
+
+	  // lastIndex = playerPosition
+	public void rules(int lastIndex) {
+		
+		// Index 7 is the players Mancala
+		if(lastIndex == 7) {
+	      System.out.println("Player gets another turn");
+	    }
+
+	    if((lastIndex > 0) && (lastIndex < 7) && (board[lastIndex] == 1)) {
+	      int playerDistance = 7 - lastIndex;
+	      int opponentDistance = 7 + playerDistance;
+
+	      if(board[opponentDistance] != 0) {
+
+	        int opponentMarbles = board[opponentDistance];
+	        int playerMarbles = board[lastIndex];
+	        board[opponentDistance] = 0;
+	        board[lastIndex] = 0;
+
+	        // Index 7 is the players Mancala
+	        board[7] = board[7] + opponentMarbles + playerMarbles;
+	        System.out.println("Captured!");
+
+	      }
+	    }
+	  }
+
 
 
 	// Creates a brand new board
